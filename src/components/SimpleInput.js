@@ -1,12 +1,23 @@
-import { useState } from "react"; //not usinf useRef anymore
+import { useState, useEffect } from "react"; //not usinf useRef anymore
 
 const SimpleInput = (props) => {
   // const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
+  const [formIsValid, setFormIsValid] = useState(false)
   // const [enteredNameIsValid, setEnteredNameIsValid] = useState(false); rather than using a state we can use a var and define the value there
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
-
+  
   const enteredNameIsValid = enteredName.trim() !== "";
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
+
+  useEffect(() => {
+    if(enteredNameIsValid){
+      setFormIsValid(true)
+    } else{
+      setFormIsValid(false)
+    }
+    
+  }, [enteredNameIsValid])
 
   const addNameHandler = (event) => {
     setEnteredName(event.target.value);
@@ -48,7 +59,6 @@ const SimpleInput = (props) => {
     setEnteredNameTouched(false);
   };
 
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   const nameInputClass = nameInputIsInvalid
     ? "form-control invalid"
@@ -69,7 +79,7 @@ const SimpleInput = (props) => {
       </div>
       {nameInputIsInvalid && <p>Name must be entered</p>}
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
